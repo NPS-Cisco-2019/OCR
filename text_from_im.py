@@ -9,6 +9,8 @@ print(sys.path)
 import text_cropping
 import argparse
 
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\Student\AppData\Local\Tesseract-OCR\tesseract.exe"
+
 def main():
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
@@ -39,8 +41,6 @@ def text_from_image_path(image_path):
     im = cv.imread(image_path)
 
     text_box = text_cropping.get_cropped_image(im)
-
-    print(text_box)
 
     if text_box is None:
         return 'TEXT NOT FOUND'
