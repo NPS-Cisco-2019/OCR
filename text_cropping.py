@@ -115,7 +115,7 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
 
     cv.imshow("Final Cropping", text_box)
     cv.waitKey(0)
-    
+
     return text_box
 
 
@@ -135,7 +135,7 @@ def rotate_image(mat, angle):
     height, width = mat.shape[:2]
     image_center = (width/2, height/2)
 
-    rotation_mat = cv.getRotationMatrix2D(image_center, angle, 1.)
+    rotation_mat = cv.getRotationMatrix2D(image_center, degrees(angle), 1.)
 
     abs_cos = abs(rotation_mat[0,0])
     abs_sin = abs(rotation_mat[0,1])

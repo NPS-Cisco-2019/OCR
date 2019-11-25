@@ -49,9 +49,9 @@ def text_from_image_path(image_path):
         text_box = cv.cvtColor(text_box, cv.COLOR_BGR2GRAY)
 
         _, text_box = cv.threshold(
-            text_box, 0, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C)
+            text_box, 0, 255, cv.THRESH_OTSU + cv.THRESH_BINARY)
 
-        # cv.imshow('TB', text_box)
+        cv.imshow('TB', text_box)
         cv.waitKey(0)
         # in order to apply Tesseract v4 to OCR text we must supply
         # (1) a language, (2) an OEM flag of 4, indicating that the we
