@@ -5,7 +5,8 @@ import time
 
 import cv2 as cv
 from nms import nms
-from math import degrees
+from math import degrees, sin, cos
+from matplotlib import pyplot as plt
 import numpy as np
 
 from opencv_text_detection import utils
@@ -27,9 +28,10 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
     # Constants
     confidenceThreshold = min_confidence
     nmsThreshold = 0.4
-    tb_padding = 0.0
+    tb_padding = 0.1
     bb_padding = [0.005, 0.05]
-    m = 5
+    theta_thresh = 2
+    m = 3
 
     print('[LM] Get scores 1')
 
@@ -44,6 +46,9 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
         thetas.append(b['angle'])
 
     incl = np.array(thetas)
+
+    print('[DATA] Initital mean: ', degrees(np.mean(incl)))
+
     if incl.size == 0:
         print('[ERROR] No theta found in included', thetas)
         return None
@@ -52,13 +57,18 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
     incl = incl[abs(incl-theta)/std <= m]
     theta = np.mean(incl)
 
+    if theta < theta_thresh:
+        theta = 0
 
-    print('[DATA] Updated Theta:  {:.4f}'.format(degrees(theta)))
+    plt.plot(incl)
+    plt.show()
+
+    print('[DATA] Updated Theta:', degrees(theta))
     print('[DATA] Inclinations and theta: ')
     print('THETAS:', len(np.array(thetas)))
     print('INCL: ', len(incl))
 
-    res = rotate_image(orig.copy(), -theta)
+    res = rotate_image(orig.copy(), theta)
 
     cv.imshow('TEST', res)
     cv.waitKey(0)
@@ -135,7 +145,8 @@ def rotate_image(mat, angle):
     height, width = mat.shape[:2]
     image_center = (width/2, height/2)
 
-    rotation_mat = cv.getRotationMatrix2D(image_center, degrees(angle), 1.)
+    # rotation_mat = cv.getRotationMatrix2D(image_center, degrees(angle), 1.)
+    rotation_mat = np.array([[cos(angle), -sin(angle), 0], [sin(angle), cos(angle), 0]])
 
     abs_cos = abs(rotation_mat[0,0])
     abs_sin = abs(rotation_mat[0,1])
@@ -151,9 +162,14 @@ def rotate_image(mat, angle):
 
 def normalizeImageSize(image):
     h, w = image.shape[:2]
-    rH, rW = (32*round(h/32), 32*round(w/32))
+    if h*w < 512*512:
+        k = ((512*512)/(h*w))**0.5
+    else:
+        k = 1
+    rH, rW = (32*round(k*h/32), 32*round(k*w/32))
 
     image = cv.resize(image, (rW, rH))
+
     return image
 
 
