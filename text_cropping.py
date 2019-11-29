@@ -38,6 +38,8 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
 
     log('[LM] Get scores 1')
 
+    image = normalizeImageSize(image)
+
     (rects, confidences, baggage) = get_scores(image, east)
 
     log('[LM] Get scores 1 END')
@@ -94,6 +96,8 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
         cv.waitKey(0)
 
     log('[LM] Get scores 2')
+
+    res = normalizeImageSize(res)
 
     (rects, confidences, baggage) = get_scores(res, east)
 
@@ -178,7 +182,6 @@ def normalizeImageSize(image):
 
 
 def get_scores(image, east='frozen_east_text_detection.pb', min_confidence=0.5, width=320, height=320):
-    image = normalizeImageSize(image)
 
     if TESTING:
         cv.imshow('SCORES INPUT', image)
