@@ -5,7 +5,7 @@ import time
 
 import cv2 as cv
 from nms import nms
-from math import degrees, sin, cos
+from math import *
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -15,7 +15,7 @@ from opencv_text_detection import utils
 from opencv_text_detection.decode import decode
 from opencv_text_detection.draw import drawPolygons, drawBoxes
 
-
+# SECTION Main Function
 def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidence=0.5, width=320, height=320):
 
     log('[LM] Cropping Begun:')
@@ -127,6 +127,10 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
     uLim = lambda x, m: x if x < m else m
     lLim = lambda x: x if x > 0 else 0 
 
+    log(drawrects)
+
+    drawrects = removeExtremes(drawrects)
+
     bb_coords = [int(min(drawrects[:, 0])), int(min(
         drawrects[:, 1])), int(max(drawrects[:, 0] + (1+tb_padding)*drawrects[:, 2])), int(max(drawrects[:, 1] + (1+tb_padding)*drawrects[:, 3]))]
     bb_w = bb_coords[3] - bb_coords[1]
@@ -136,6 +140,7 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
 
     log('[DATA] Printing Textbox dimensions', bb_w, bb_h)
     log('[DATA] Printing Image dimensions', w, h)
+
 
     text_box = res[lLim(bb_coords[1]-int(h*bb_padding[1]/2)):uLim(bb_coords[3] +
                    int(h*bb_padding[1]/2), h), lLim(bb_coords[0]-int(w*bb_padding[0]/2)):uLim(bb_coords[2]+int(w*bb_padding[0]/2), w)]
@@ -149,7 +154,9 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
         cv.waitKey(0)
 
     return text_box
+# !SECTION 
 
+# SECTION Helper Code
 
 def text_detection_command():
     # construct the argument parser and parse the arguments
@@ -160,6 +167,15 @@ def text_detection_command():
 
     get_cropped_image(cv.imread(args["image"]))
 
+def N(u, s, x):
+    return np.exp((x-u)**2/s**2)
+
+def removeExtremes(drawrects):
+    x = drawrects[:, 0]
+    y = drawrects[:, 1]
+    x = x[N(np.mean(x), np.std(x), x) > p_thresh]
+    x = x[N(np.mean(x), np.std(x), x) > p_thresh]
+    return drawrects
 
 def rotate_image(mat, angle):
 
@@ -224,7 +240,7 @@ def get_scores(image, east='frozen_east_text_detection.pb', min_confidence=0.5, 
     confidenceThreshold = min_confidence
 
     return decode(scores, geometry, confidenceThreshold)
-
+# !SECTION 
 
 if __name__ == '__main__':
     text_detection_command()

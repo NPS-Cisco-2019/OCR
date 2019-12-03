@@ -3,7 +3,8 @@ import cv2 as cv
 import pytesseract
 import sys, base64, os
 
-TESTING = False
+TESTING = True
+p_thresh = 0.01
 
 def fileLog(*vals):
     with open('OCR_progress_log.txt', 'a+') as f: 

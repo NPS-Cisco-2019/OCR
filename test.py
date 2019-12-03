@@ -13,6 +13,7 @@ from text_from_im import text_from_image_path
 
 for i in range(1, 100):
     try:
+        log(f'[{i}]')
         image_path = str(i)+'.png'
         text_from_image_path(os.path.join(os.getcwd(), 'images/'+image_path))
     except Exception as e:
