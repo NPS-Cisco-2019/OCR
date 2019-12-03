@@ -11,6 +11,7 @@ import numpy as np
 from config import *
 from text_from_im import text_from_image_path
 
+initLog()
 for i in range(1, 100):
     try:
         log(f'[{i}]')

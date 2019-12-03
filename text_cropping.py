@@ -127,19 +127,12 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
     uLim = lambda x, m: x if x < m else m
     lLim = lambda x: x if x > 0 else 0 
 
-    log(drawrects)
-
     drawrects = removeExtremes(drawrects)
 
     bb_coords = [int(min(drawrects[:, 0])), int(min(
         drawrects[:, 1])), int(max(drawrects[:, 0] + (1+tb_padding)*drawrects[:, 2])), int(max(drawrects[:, 1] + (1+tb_padding)*drawrects[:, 3]))]
     bb_w = bb_coords[3] - bb_coords[1]
     bb_h = bb_coords[2] - bb_coords[0]
-
-    log('[DATA] Printing bb_coords', int(min(drawrects[:, 0])), int(min(drawrects[:, 1])), int(max(drawrects[:, 0] + (1+tb_padding)*drawrects[:, 2])), int(max(drawrects[:, 1] + (1+tb_padding)*drawrects[:, 3])))
-
-    log('[DATA] Printing Textbox dimensions', bb_w, bb_h)
-    log('[DATA] Printing Image dimensions', w, h)
 
 
     text_box = res[lLim(bb_coords[1]-int(h*bb_padding[1]/2)):uLim(bb_coords[3] +
@@ -168,13 +161,13 @@ def text_detection_command():
     get_cropped_image(cv.imread(args["image"]))
 
 def N(u, s, x):
-    return np.exp((x-u)**2/s**2)
+    return np.exp(-(x-u)**2/s**2)
 
 def removeExtremes(drawrects):
-    x = drawrects[:, 0]
     y = drawrects[:, 1]
-    x = x[N(np.mean(x), np.std(x), x) > p_thresh]
-    x = x[N(np.mean(x), np.std(x), x) > p_thresh]
+    log('[DATA] Bounding boxes Before: ', len(drawrects))
+    drawrects = drawrects[N(np.mean(y), np.std(y), y) > p_thresh]
+    log('[DATA] Bounding boxes After: ', len(drawrects))
     return drawrects
 
 def rotate_image(mat, angle):

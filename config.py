@@ -4,7 +4,7 @@ import pytesseract
 import sys, base64, os
 
 TESTING = True
-p_thresh = 0.01
+p_thresh = 0.001
 
 def fileLog(*vals):
     with open('OCR_progress_log.txt', 'a+') as f: 
@@ -20,7 +20,7 @@ def initLog():
     open('OCR_progress_log.txt', 'w').close()
 
 sys.path.append(os.path.join(os.getcwd(), "OCR"))
-print(sys.path)
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\Student\AppData\Local\Tesseract-OCR\tesseract.exe"
+# NOTE Uncomment if running on windows
+# pytesseract.pytesseract.tesseract_cmd = r"C:\Users\Student\AppData\Local\Tesseract-OCR\tesseract.exe"
 
