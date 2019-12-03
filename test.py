@@ -2,8 +2,8 @@ import argparse
 import os
 import time
 
-import cv2 as cv
-from nms import nms
+import cv2 as cv;
+from nms import nms;
 from math import degrees, sin, cos
 from matplotlib import pyplot as plt
 import numpy as np

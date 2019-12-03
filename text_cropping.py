@@ -122,15 +122,26 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
         cv.imshow('DRAWON AFTER ROTATION', drawOn)
         cv.waitKey(0)
 
+    h, w = res.shape[:2]
+
+    uLim = lambda x, m: x if x < m else m
+    lLim = lambda x: x if x > 0 else 0 
+
     bb_coords = [int(min(drawrects[:, 0])), int(min(
         drawrects[:, 1])), int(max(drawrects[:, 0] + (1+tb_padding)*drawrects[:, 2])), int(max(drawrects[:, 1] + (1+tb_padding)*drawrects[:, 3]))]
     bb_w = bb_coords[3] - bb_coords[1]
     bb_h = bb_coords[2] - bb_coords[0]
 
-    text_box = res[bb_coords[1]-int(h*bb_padding[1]/2):bb_coords[3] +
-                   int(h*bb_padding[1]/2), bb_coords[0]-int(w*bb_padding[0]/2):bb_coords[2]+int(w*bb_padding[0]/2)]
+    log('[DATA] Printing bb_coords', int(min(drawrects[:, 0])), int(min(drawrects[:, 1])), int(max(drawrects[:, 0] + (1+tb_padding)*drawrects[:, 2])), int(max(drawrects[:, 1] + (1+tb_padding)*drawrects[:, 3])))
+
+    log('[DATA] Printing Textbox dimensions', bb_w, bb_h)
+    log('[DATA] Printing Image dimensions', w, h)
+
+    text_box = res[lLim(bb_coords[1]-int(h*bb_padding[1]/2)):uLim(bb_coords[3] +
+                   int(h*bb_padding[1]/2), h), lLim(bb_coords[0]-int(w*bb_padding[0]/2)):uLim(bb_coords[2]+int(w*bb_padding[0]/2), w)]
 
     if text_box.size == 0:
+        log('[ERROR] Textbox not found')
         return None
 
     if TESTING:
