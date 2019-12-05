@@ -46,7 +46,7 @@ def text_from_image_path(image_path):
             cv.imshow('TB', text_box)
             cv.waitKey(0)
 
-        config = ("-l eng --oem 1 --psm 4")
+        config = ("-l eng +equ --oem 1 --psm 4")
         text = pytesseract.image_to_string(text_box, config=config)
         log(text)
         return text
