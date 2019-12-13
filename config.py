@@ -3,7 +3,7 @@ import cv2 as cv
 import pytesseract
 import sys, base64, os
 
-TESTING = True
+TESTING = False
 p_thresh = 0.001
 
 def fileLog(*vals):
@@ -22,5 +22,5 @@ def initLog():
 sys.path.append(os.path.join(os.getcwd(), "OCR"))
 
 # NOTE Uncomment if running on windows
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\Student\AppData\Local\Tesseract-OCR\tesseract.exe"
+# pytesseract.pytesseract.tesseract_cmd = r"C:\Users\Student\AppData\Local\Tesseract-OCR\tesseract.exe"
 

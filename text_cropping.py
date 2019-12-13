@@ -6,7 +6,6 @@ import time
 import cv2 as cv
 from nms import nms
 from math import *
-from matplotlib import pyplot as plt
 import numpy as np
 
 from config import *
@@ -64,10 +63,6 @@ def get_cropped_image(image, east='frozen_east_text_detection.pb', min_confidenc
 
     if degrees(theta) < theta_thresh:
         theta = 0
-
-    if TESTING:
-        plt.plot(incl)
-        plt.show()
 
     log('[DATA] Updated Theta:', degrees(theta))
     log('[DATA] Inclinations and theta: ')
