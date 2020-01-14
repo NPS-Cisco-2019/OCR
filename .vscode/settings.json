@@ -1,0 +1,7 @@
+{
+    "python.formatting.provider": "black"
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#fcb700",
+        "terminalCursor.foreground": "#fcb700"
+    }
+}
